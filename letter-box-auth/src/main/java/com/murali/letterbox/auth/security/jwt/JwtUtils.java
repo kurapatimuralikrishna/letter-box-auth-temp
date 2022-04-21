@@ -24,11 +24,11 @@ import io.jsonwebtoken.UnsupportedJwtException;
 @Component
 public class JwtUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtils.class);
-	@Value("${murali.letterbox.app.jwtSecret")
+	@Value("${murali.letterbox.app.jwtSecret}")
 	private String jwtSecret;
-	@Value("${murali.letterbox.app.jwtExpirationMs")
-	private String jwtExpirationMs;
-	@Value("${murali.letterbox.app.jwtCookieName")
+	@Value("${murali.letterbox.app.jwtExpirationMs}")
+	private int jwtExpirationMs;
+	@Value("${murali.letterbox.app.jwtCookieName}")
 	private String jwtCookie;
 
 	public String getJwtFromCookie(HttpServletRequest request) {
@@ -47,7 +47,6 @@ public class JwtUtils {
 		return cookie;
 	}
 
-	@SuppressWarnings("deprecation")
 	public String generateTokenFromUsername(String username) {
 		return Jwts.builder().setSubject(username).setIssuedAt(new Date())
 				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
@@ -59,7 +58,7 @@ public class JwtUtils {
 	}
 	public boolean validateJwtToken(String authToken) {
 		try {
-			Jwts.parser().setSigningKey(authToken).parseClaimsJws(authToken);
+			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
 			return true;
 		} catch (SignatureException e) {
 			LOGGER.error("Invalid jwt signature: {}", e.getMessage());

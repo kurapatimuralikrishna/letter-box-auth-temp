@@ -47,7 +47,9 @@ public class AuthServiceImpl implements AuthService {
 	public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
 		Authentication auth = authManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		
 		SecurityContextHolder.getContext().setAuthentication(auth);
+		
 		UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
 	    ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
@@ -59,6 +61,7 @@ public class AuthServiceImpl implements AuthService {
 				roles));
 	}
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signup) {
+		//Make it so users can't send signup requests after signing in.
 		if(userRepository.existsByUsername(signup.getUsername())) {
 			return ResponseEntity
 					.badRequest()
