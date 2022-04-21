@@ -21,7 +21,7 @@ public class AuthController {
 	@Autowired
 	AuthService service;
 
-	//make sure to have a way to forcefully logout a user server side.
+	// make sure to have a way to forcefully logout a user server side.
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		return service.authenticateUser(loginRequest);
@@ -30,5 +30,10 @@ public class AuthController {
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signup) {
 		return service.registerUser(signup);
+	}
+
+	@PostMapping("/signout")
+	public ResponseEntity<?> logoutUser() {
+		return service.logoutUser();
 	}
 }

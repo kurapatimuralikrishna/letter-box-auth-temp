@@ -13,4 +13,6 @@ public interface AuthService {
 
 	ResponseEntity<?> registerUser(@Valid SignupRequest signup);
 
+	ResponseEntity<?> logoutUser();
+
 }

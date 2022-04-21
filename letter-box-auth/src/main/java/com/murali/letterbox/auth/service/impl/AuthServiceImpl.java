@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,8 +25,8 @@ import com.murali.letterbox.auth.model.User;
 import com.murali.letterbox.auth.model.UserDetailsImpl;
 import com.murali.letterbox.auth.payload.request.LoginRequest;
 import com.murali.letterbox.auth.payload.request.SignupRequest;
-import com.murali.letterbox.auth.payload.response.JwtResponse;
 import com.murali.letterbox.auth.payload.response.MessageResponse;
+import com.murali.letterbox.auth.payload.response.UserInfoResponse;
 import com.murali.letterbox.auth.repository.RoleRepository;
 import com.murali.letterbox.auth.repository.UserRepository;
 import com.murali.letterbox.auth.security.jwt.JwtUtils;
@@ -46,12 +48,12 @@ public class AuthServiceImpl implements AuthService {
 		Authentication auth = authManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(auth);
-		String jwt = jwtUtils.generateJwtToken(auth);
 		UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+	    ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 				.collect(Collectors.toList());
-		return ResponseEntity.ok(new JwtResponse(jwt, 
-				userDetails.getId(), 
+		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+		        .body(new UserInfoResponse(userDetails.getId(), 
 				userDetails.getUsername(), 
 				userDetails.getEmail(),
 				roles));
@@ -102,5 +104,11 @@ public class AuthServiceImpl implements AuthService {
 		user.setRoles(roles);
 		userRepository.save(user);
 		return ResponseEntity.ok(new MessageResponse("User registered successfully"));
+	}
+	@Override
+	public ResponseEntity<?> logoutUser() {
+	    ResponseCookie cookie = jwtUtils.getCleanCookie();
+	    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+	        .body(new MessageResponse("You've been signed out!"));
 	}
 }
