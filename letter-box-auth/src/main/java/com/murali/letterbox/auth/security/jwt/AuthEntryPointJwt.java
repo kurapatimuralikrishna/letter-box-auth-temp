@@ -18,12 +18,12 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthEntryPointJwt.class);
+	private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {
-		LOGGER.error("Unauthorized Error: {}", authException.getMessage());
+		logger.error("Unauthorized Error: {}", authException.getMessage());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 	    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 	    

@@ -23,7 +23,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 
 @Component
 public class JwtUtils {
-	private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtils.class);
+	private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 	@Value("${murali.letterbox.app.jwtSecret}")
 	private String jwtSecret;
 	@Value("${murali.letterbox.app.jwtExpirationMs}")
@@ -61,15 +61,15 @@ public class JwtUtils {
 			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
 			return true;
 		} catch (SignatureException e) {
-			LOGGER.error("Invalid jwt signature: {}", e.getMessage());
+			logger.error("Invalid jwt signature: {}", e.getMessage());
 		} catch (MalformedJwtException e) {
-			LOGGER.error("Invalid jwt token: {}", e.getMessage());
+			logger.error("Invalid jwt token: {}", e.getMessage());
 		} catch (ExpiredJwtException e) {
-			LOGGER.error("Jwt token is expired: {}", e.getMessage());
+			logger.error("Jwt token is expired: {}", e.getMessage());
 		} catch (UnsupportedJwtException e) {
-			LOGGER.error("Jwt token is unsupported: {}", e.getMessage());
+			logger.error("Jwt token is unsupported: {}", e.getMessage());
 		} catch (IllegalArgumentException e) {
-			LOGGER.error("Jwt claims string is empty: {}", e.getMessage());
+			logger.error("Jwt claims string is empty: {}", e.getMessage());
 		}
 		return false;
 	}

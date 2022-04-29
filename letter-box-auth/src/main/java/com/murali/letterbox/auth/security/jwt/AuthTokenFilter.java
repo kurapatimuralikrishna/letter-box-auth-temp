@@ -23,7 +23,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	private JwtUtils jwtUtils;
 	@Autowired
 	private UserDetailsServiceImpl userDetailsService;
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthTokenFilter.class);
+	private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -39,7 +39,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
 		} catch (Exception e) {
-			LOGGER.error("Cannot set authentication: {}", e);
+			logger.error("Cannot set authentication: {}", e);
 		}
 		filterChain.doFilter(request, response);
 	}

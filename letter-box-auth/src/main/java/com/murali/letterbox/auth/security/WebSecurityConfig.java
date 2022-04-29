@@ -26,6 +26,7 @@ import com.murali.letterbox.auth.service.impl.UserDetailsServiceImpl;
 		prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
+	//Originally not private but why should it have package access?
 	UserDetailsServiceImpl userDetailsService;
 	@Autowired
 	private AuthEntryPointJwt unauthorizedHandler;
